@@ -48,8 +48,9 @@ int main (){
 }
 ```
 
+shell
 ```bash
-python cbi.py example.c
+$ python cbi.py example.c
 ```
 
 example.com.c
