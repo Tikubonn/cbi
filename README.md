@@ -41,6 +41,7 @@ buff name; initbuff(&name, name ## sequence, size);
 example.c
 ```c	
 @import "example.h"
+@import "example.h" // not load again.
 
 int main (){
   makebuff(temp, 4096);
