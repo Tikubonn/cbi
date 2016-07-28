@@ -40,7 +40,7 @@ buff name; initbuff(&name, name ## sequence, size);
 
 example.c
 ```c	
-@import example.h
+@import "example.h"
 
 int main (){
   makebuff(temp, 4096);
