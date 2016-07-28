@@ -54,6 +54,50 @@ class oprandMod (oprand):
         b = sequence.pop()
         sequence.append(b % a)
 
+class oprandEqual (oprand):
+
+    order = 0
+
+    def evaulate (self, sequence):
+        a = sequence.pop()
+        b = sequence.pop()
+        sequence.append(1 if a == b else 0)
+
+class oprandEqualNot (oprand):
+
+    order = 0
+
+    def evaluate (self, sequence):
+        a = sequence.pop()
+        b = sequence.pop()
+        sequence.append(1 if a != b else 0)
+        
+class oprandNot (oprand):
+
+    order = 0
+
+    def evaulate (self, sequence):
+        a = sequence.pop()
+        sequence.append(1 if not a else 0)
+
+class oprandOr (oprand):
+
+    order = 0
+
+    def evaluate (self, sequence):
+        a = sequence.pop()
+        b = sequence.pop()
+        sequence.append(1 if a or b else 0)
+        
+class oprandAnd (oprand):
+
+    order = 0
+
+    def evaulate (self, sequence):
+        a = sequence.pop()
+        b = sequence.pop()
+        sequence.append(1 if a and b else 0)
+
 class oprandOpenBrace (oprand):
     
     pass
@@ -68,7 +112,13 @@ class oprandCloseBrace (oprand):
 oprands = {}
 oprands.setdefault("+", oprandAdd())
 oprands.setdefault("*", oprandMul())
-
+oprands.setdefault("/", oprandDiv())
+oprands.setdefault("%", oprandMod())
+oprands.setdefault("==", oprandEqual())
+oprands.setdefault("!=", oprandEqualNot())
+oprands.setdefault("&&", oprandAnd())
+oprands.setdefault("||", oprandOr())
+oprands.setdefault("!", oprandNot())
 
 # parse methods
 
