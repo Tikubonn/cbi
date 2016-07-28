@@ -2,8 +2,7 @@
 import os
 import sys
 
-sys.path.append(os.path.expanduser("~/app-data/cbi"))
-sys.path.append(os.path.expanduser("~/app-data/cbi/common"))
+sys.path.append(os.path.expanduser("common"))
 
 import stream
 import oprand
@@ -110,6 +109,8 @@ class oprandIfdef (oprand.oprand):
     # @ifdef ... @then ... @else ... @endif
     # @ifdef ... newline ... @else ... @endif 
     # @ifdef ... newline ... @endif
+
+    def parse (self, streamin):
 
         def parsecase ():
             
