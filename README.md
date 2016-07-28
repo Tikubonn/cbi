@@ -3,6 +3,12 @@
 
 cbi is a small preprocessor language written in python.
 it wrote for me, so probably it has bug.
+i wrote it, because i think, standard cpp is not usefull at some case.
+exactly, i dont like escape newlines in multiline block and somethings.
+@if oprand was extended of meaning.
+@if oprand can use text that will translate to immediate formula.
+so, you can use conditional or eternal recursive call. it is my hobby.
+@import operand load the source code that was not loaded, so we not have to use include-guard oft.
 
 ## overview
 
