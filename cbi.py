@@ -111,30 +111,53 @@ class oprandIfdef (oprand.oprand):
     # @ifdef ... newline ... @else ... @endif 
     # @ifdef ... newline ... @endif
 
-    def parse (self, streamin):
-
         def parsecase ():
+            
             content, oprand = readtooprands(["then", "else", "endif"], streamin)
+            
             if oprand == "then":
-                pass
+                self.add("case", content)
+                return parsethen()
+
+            streamcontent = stream.stream(content)
+            line = readline(streamcontent)
+            rest = readrest(streamcontent)
+                
             if oprand == "else":
-                pass
+                self.add("case", line)
+                self.add("then", rest)
+                return parseelse()
+            
             if oprand == "endif":
-                pass
+                self.add("case", line)
+                self.add("then", rest)
+                return
 
         def parsethen ():
+
             content, oprand = readtooprands(["else", "endif"], streamin)
+
             if oprand == "else":
-                pass
+                self.add("then", content)
+                return parseelse()
+            
             if oprand == "endif":
-                pass
+                self.add("then", content)
+                return
 
         def parseelse ():
-            content, oprand = readtooprands(["else"], streamin)
+
+            content, oprand = readtooprands(["endif"], streamin)
+
             if oprand == "endif":
-                pass
+                self.add("else", content)
+                return
 
         parsecase()
+        
+        self.add("case", self.get("case").strip(string.whitespace))
+        self.add("then", self.get("then").strip(string.whitespace))
+        self.add("else", self.get("else").strip(string.whitespace))
 
     def run (self, tm):
         if not self.get("name") in defineds:
@@ -157,13 +180,52 @@ class oprandIfndef (oprand.oprand):
     def parse (self, streamin):
         
         def parsecase ():
+            
             content, oprand = readtooprands(["then", "else", "endif"], streamin)
+            
             if oprand == "then":
-                pass
+                self.add("case", content)
+                return parsethen()
+
+            streamcontent = stream.stream(content)
+            line = readline(streamcontent)
+            rest = readrest(streamcontent)
+                
             if oprand == "else":
-                pass
+                self.add("case", line)
+                self.add("then", rest)
+                return parseelse()
+            
             if oprand == "endif":
-                pass
+                self.add("case", line)
+                self.add("then", rest)
+                return
+
+        def parsethen ():
+
+            content, oprand = readtooprands(["else", "endif"], streamin)
+
+            if oprand == "else":
+                self.add("then", content)
+                return parseelse()
+            
+            if oprand == "endif":
+                self.add("then", content)
+                return
+
+        def parseelse ():
+
+            content, oprand = readtooprands(["endif"], streamin)
+
+            if oprand == "endif":
+                self.add("else", content)
+                return
+
+        parsecase()
+        
+        self.add("case", self.get("case").strip(string.whitespace))
+        self.add("then", self.get("then").strip(string.whitespace))
+        self.add("else", self.get("else").strip(string.whitespace))
 
         def parsethen ():
             content, oprand = readtooprands(["else", "endif"], streamin)
