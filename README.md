@@ -47,6 +47,11 @@ int main (){
   return sum(3);
 }
 ```
+
+```bash
+python cbi.py example.c
+```
+
 example.com.c
 ```c
 struct buff {
