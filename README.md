@@ -13,7 +13,7 @@ so, you can use conditional or eternal recursive call. it is my hobby.
 ## overview
 
 example.h
-```
+```c
 struct buff {
   void *sequence;
   void *wseek;
@@ -39,7 +39,7 @@ buff name; initbuff(&name, name ## sequence, size);
 ```
 
 example.c
-```	
+```c	
 @import example.h
 
 int main (){
@@ -48,7 +48,7 @@ int main (){
 }
 ```
 example.com.c
-```
+```c
 struct buff {
   void *sequence;
   void *wseek;
