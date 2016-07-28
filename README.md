@@ -57,11 +57,11 @@ struct buff {
 }
 
 int main (){
-  char name ## sequence[size];
-  buff name; buff->sequence = sequential;
-  buff->wseek = sequential;
-  buff->rseek = sequential;
-  buff->end = sequential + size;
+  char tempsequence[size];
+  buff name; buff->sequence = tempsequence;
+  buff->wseek = tempsequence;
+  buff->rseek = tempsequence;
+  buff->end = tempsequence + size;
   return 3 + 3 - 1 + 3 - 1 - 1 + 0;
 }
 ```
