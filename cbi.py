@@ -12,7 +12,7 @@ import scope
 import temp
 import define
 import string
-import fomula
+import formula
 
 defineds = scope.scope()
 oprands = scope.scope()
