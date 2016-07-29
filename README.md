@@ -84,4 +84,4 @@ int main (){
 * and fix some bug.
 
 ## licence
-this released under the MIT Licence.
+this released under the *MIT Licence*.
