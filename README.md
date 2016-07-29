@@ -26,10 +26,10 @@ struct buff {
 }
 
 @define initbuff(buff, sequential, size)
-buff->sequence = sequential;
-buff->wseek = sequential;
-buff->rseek = sequential;
-buff->end = sequential + size;
+(buff)->sequence = sequential;
+(buff)->wseek = sequential;
+(buff)->rseek = sequential;
+(buff)->end = sequential + size;
 @end
 
 @define makebuff(name, size)
