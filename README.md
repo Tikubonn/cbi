@@ -12,7 +12,7 @@ but, i want to type the source code smoothly.
 
 * supporting local scope.
 * supporting conditional or eternal recursive call.
-* supporting /@import/ operator. it load sourcecode which is not loaded.
+* supporting `@import` operator. it load sourcecode which is not loaded.
 
 ## overview
 
