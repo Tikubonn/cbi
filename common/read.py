@@ -3,7 +3,7 @@ import string
 import stream
 import oprand
 
-wordable = string.ascii_letters + string.digits
+wordable = string.ascii_letters + string.digits + "_"
 
 def readif (func, streamin):
     content = ""

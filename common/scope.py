@@ -12,9 +12,6 @@ class scope:
     def push (self):
         self.scopes.append(scopein())
 
-    def pushroot (self):
-        self.scopes.append(scopein(True))
-
     def pop (self):
         self.scopes.pop()
 
@@ -45,7 +42,7 @@ class pushscope:
 
     def exit (self, exception, exceptionvalue, trace):
         self.scope.pop()
-        return True
+        return False
 
     __init__ = init
     __enter__ = enter

@@ -45,7 +45,7 @@ class pushpathname:
 
     def exit (self, exception, exceptionvalue, trace):
         self.pathname.pop()
-        return True
+        return False
 
     __init__ = init
     __enter__ = enter
