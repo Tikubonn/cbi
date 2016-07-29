@@ -78,7 +78,6 @@ int main (){
 ```
 
 ##todo
-at now version, ## operator will consolidated tokens in anywhere.
-i want to ignore concatenation in outside of block.
-and i want to think about operator order.
-and fix some bug.
+* at now version, ## operator will consolidated tokens in anywhere. so i want to ignore concatenation in outside of block.
+* think more about order of operators.
+* and fix some bug.
