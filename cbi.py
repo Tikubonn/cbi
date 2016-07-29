@@ -18,6 +18,7 @@ import pathname
 defineds = scope.scope()
 oprands = scope.scope()
 pathname = pathname.pathname()
+imported = set()
 
 # read method
 
@@ -383,8 +384,6 @@ class oprandImport (oprand.oprand):
 
     # @import locate
 
-    imported = set()
-
     def parse (self, streamin):
         read.readspace(streamin)
         self.add("name", read.readstring(streamin))
@@ -392,7 +391,8 @@ class oprandImport (oprand.oprand):
     def run (self, tm):
         filename = self.get("name")[1:-1]
         findname = pathname.find(filename)
-        if not findname in self.imported:
+        if not findname in imported:
+            imported.add(findname)
             pathname.push()
             pathname.add(os.path.dirname(filename))
             with open(findname, "r") as fin:
