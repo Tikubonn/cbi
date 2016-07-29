@@ -25,9 +25,12 @@ class pathname:
         return pathnames
 
     def find (self, filename):
+        if os.path.isabs(filename):
+            return filename
         for pathname in self.get():
             pathname = os.path.join(pathname, filename)
             if os.path.exists(pathname):
                 return pathname
 
     __init__ = init
+
