@@ -29,8 +29,24 @@ class pathname:
             return filename
         for pathname in self.get():
             pathname = os.path.join(pathname, filename)
+            pathname = os.path.abspath(pathname)
             if os.path.exists(pathname):
                 return pathname
 
     __init__ = init
 
+class pushpathname:
+
+    def init (self, pathname):
+        self.pathname = pathname
+
+    def enter (self):
+        self.pathname.push()
+
+    def exit (self, exception, exceptionvalue, trace):
+        self.pathname.pop()
+        return True
+
+    __init__ = init
+    __enter__ = enter
+    __exit__ = exit

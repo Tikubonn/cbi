@@ -17,7 +17,7 @@ import pathname
 
 defineds = scope.scope()
 oprands = scope.scope()
-pathname = pathname.pathname()
+searchpathname = pathname.pathname()
 imported = set()
 
 # read method
@@ -254,10 +254,9 @@ class defineImmediate (define.define):
         self.source = source
 
     def run (self, streamin):
-        defineds.push()
-        content = load(stream.stream(self.source))
-        defineds.pop()
-        return content
+        with scope.pushscope(defineds):
+            content = load(stream.stream(self.source))
+            return content
 
     __init__ = init
 
@@ -274,20 +273,21 @@ class defineFunction (define.define):
         self.argument = read.readlist(stream.stream(argument))
 
     def run (self, streamin):
-        defineds.push()
         argument = read.readlist(streamin)
         if len(argument) < len(self.argument):
-            raise Exception("macro missing arguments of (... %s)." % ",".join(self.argument[len(argument):]))
+            raise Exception("macro missing arguments of (... %s)." %
+                                ", ".join(self.argument[len(argument):]))
         if len(argument) > len(self.argument):
-            raise Exception("macro too many arguments of (... %s)" % ",".join(argument[len(self.argument):]))
-        for bind in zip(self.argument, argument):
-            name, value = bind
-            value = expand(stream.stream(value))
-            if name != value:
-                defineds.add(name, defineImmediate(value))
-        content = load(stream.stream(self.source))
-        defineds.pop()
-        return content
+            raise Exception("macro too many arguments of (... %s)" %
+                                ", ".join(argument[len(self.argument):]))
+        with scope.pushscope(defineds):
+            for bind in zip(self.argument, argument):
+                name, value = bind
+                value = expand(stream.stream(value))
+                if name != value:
+                    defineds.add(name, defineImmediate(value))
+            content = load(stream.stream(self.source))
+            return content
 
     __init__ = init
     
@@ -381,14 +381,13 @@ class oprandImport (oprand.oprand):
 
     def run (self, tm):
         filename = self.get("name")[1:-1]
-        findname = pathname.find(filename)
+        findname = searchpathname.find(filename)
         if not findname in imported:
             imported.add(findname)
-            pathname.push()
-            pathname.add(os.path.dirname(filename))
-            with open(findname, "r") as fin:
-                tm.add(load(stream.filestream(fin)))
-            pathname.pop()
+            with pathname.pushpathname(searchpathname):
+                searchpathname.add(os.path.dirname(filename))
+                with open(findname, "r") as fin:
+                    tm.add(load(stream.filestream(fin)))
 
     def build (self):
         return "@import %s" % self.get("name")
@@ -405,11 +404,10 @@ class oprandLoad (oprand.oprand):
     def run (self, tm):
         filename = self.get("name")[1:-1]
         dirname = os.path.dirname(filename)
-        pathname.push()
-        pathname.add(dirname)
-        with open(filename, "r") as fin:
-            tm.add(load(stream.filestream(fin)))
-        pathname.pop()
+        with pathname.pushpathname(searchpathname):
+            searchpathname.add(dirname)
+            with open(filename, "r") as fin:
+                tm.add(load(stream.filestream(fin)))
 
     def build (self):
         return "@load %s" % self.get("name")
@@ -426,11 +424,10 @@ class oprandSource (oprand.oprand):
     def run (self, tm):
         filename = self.get("name")[1:-1]
         dirname = os.path.dirname(filename)
-        pathname.push()
-        pathname.add(dirname)
-        with open(filename, "r") as fin:
-            tm.add('"%s"' % "".join(map((lambda c: '\\"' if c == '"' else c), fin.read())))
-        pathname.pop()
+        with pathname.pushpathname(searchpathname):
+            searchpathname.add(dirname)
+            with open(filename, "r") as fin:
+                tm.add('"%s"' % "".join(map((lambda c: '\\"' if c == '"' else c), fin.read())))
 
     def build (self):
         return "@source %s" % self.get("name")
@@ -467,7 +464,6 @@ class oprandEndif (oprand.oprand):
 
     def error (self):
         raise Exception("@endif has no meaning with alone.")
-    
     
 oprands.add("if", oprandIf)
 oprands.add("ifdef", oprandIfdef)
@@ -519,8 +515,8 @@ def expand (streamin):
     while streamin.look():
         word = read.readword(streamin)
         if word in defineds:
-            content += defineds.get(word).run(streamin)
-        else: content += word
+            word = defineds.get(word).run(streamin)
+        content += word
         unword = read.readunword(streamin)
         content += unword
     return content
@@ -556,9 +552,8 @@ for filename in sys.argv[1:]:
     filenameout = filename.split(".")
     filenameout.insert(-1, "com")
     filenameout = ".".join(filenameout)
-    pathname.push()
-    pathname.add(os.path.dirname(filename))
-    with open(filename, "r") as fin:
-        with open(filenameout, "w") as fout:
-            fout.write(load(stream.filestream(fin)))
-        pathname.pop()
+    with pathname.pushpathname(searchpathname):
+        searchpathname.add(os.path.dirname(filename))
+        with open(filename, "r") as fin:
+            with open(filenameout, "w") as fout:
+                fout.write(load(stream.filestream(fin)))

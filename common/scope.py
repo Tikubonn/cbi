@@ -37,16 +37,16 @@ class scope:
 
 class pushscope:
 
-    def __init__ (self, scope):
+    def init (self, scope):
         self.scope = scope
 
-    def __enter__ (self):
+    def enter (self):
         self.scope.push()
 
-    def __exit__ (self, exception, exceptionvalue, trace):
+    def exit (self, exception, exceptionvalue, trace):
         self.scope.pop()
+        return True
 
-class pushscoperoot (pushscope):
-
-    def __enter__ (self):
-        self.scope.pushroot()
+    __init__ = init
+    __enter__ = enter
+    __exit__ = exit
