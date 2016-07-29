@@ -45,14 +45,14 @@ class oprandIf (oprand.oprand):
     # @if ... newline ... @else ... @endif 
     # @if ... newline ... @endif
 
-    def parse (self, streamin):        
-        
-        def parsecase ():
+    def parse (self, streamin):
+
+        def parsecase():
             
             content, oprand = readtooprands(["then", "else", "endif"], streamin)
             
             if oprand == "then":
-                self.add("case", content)
+                self.add("case", content.strip())
                 return parsethen()
 
             streamcontent = stream.stream(content)
@@ -60,13 +60,13 @@ class oprandIf (oprand.oprand):
             rest = readrest(streamcontent)
                 
             if oprand == "else":
-                self.add("case", line)
-                self.add("then", rest)
+                self.add("case", line.strip())
+                self.add("then", rest.strip())
                 return parseelse()
             
             if oprand == "endif":
-                self.add("case", line)
-                self.add("then", rest)
+                self.add("case", line.strip())
+                self.add("then", rest.strip())
                 return
 
         def parsethen ():
@@ -74,32 +74,26 @@ class oprandIf (oprand.oprand):
             content, oprand = readtooprands(["else", "endif"], streamin)
 
             if oprand == "else":
-                self.add("then", content)
+                self.add("then", content.strip())
                 return parseelse()
             
             if oprand == "endif":
-                self.add("then", content)
+                self.add("then", content.strip())
                 return
 
         def parseelse ():
 
             content, oprand = readtooprands(["endif"], streamin)
-
             if oprand == "endif":
-                self.add("else", content)
+                self.add("else", content.strip())
                 return
 
         parsecase()
-        
-        self.add("case", self.get("case").strip(string.whitespace))
-        self.add("then", self.get("then").strip(string.whitespace))
-        self.add("else", self.get("else").strip(string.whitespace))
 
     def run (self, tm):
-        with scope.pushscope(defineds):
-            if fomula.evaluate(expand(stream.stream(self.get("case")))) == 0:
-                tm.add(load(stream.stream(self.get("else"))))
-            else: tm.add(load(stream.stream(self.get("then"))))
+        if formula.evaluate(expand(stream.stream(self.get("case")))) == 0:
+            tm.add(load(stream.stream(self.get("else"))))
+        else: tm.add(load(stream.stream(self.get("then"))))
     
     def build (self):
         return "@if %s @then %s @else %s @endif" % (
@@ -121,7 +115,7 @@ class oprandIfdef (oprand.oprand):
             content, oprand = readtooprands(["then", "else", "endif"], streamin)
             
             if oprand == "then":
-                self.add("case", content)
+                self.add("case", content.strip())
                 return parsethen()
 
             streamcontent = stream.stream(content)
@@ -129,13 +123,13 @@ class oprandIfdef (oprand.oprand):
             rest = readrest(streamcontent)
                 
             if oprand == "else":
-                self.add("case", line)
-                self.add("then", rest)
+                self.add("case", line.strip())
+                self.add("then", rest.strip())
                 return parseelse()
             
             if oprand == "endif":
-                self.add("case", line)
-                self.add("then", rest)
+                self.add("case", line.strip())
+                self.add("then", rest.strip())
                 return
 
         def parsethen ():
@@ -143,32 +137,26 @@ class oprandIfdef (oprand.oprand):
             content, oprand = readtooprands(["else", "endif"], streamin)
 
             if oprand == "else":
-                self.add("then", content)
+                self.add("then", content.strip())
                 return parseelse()
             
             if oprand == "endif":
-                self.add("then", content)
+                self.add("then", content.strip())
                 return
 
         def parseelse ():
 
             content, oprand = readtooprands(["endif"], streamin)
-
             if oprand == "endif":
-                self.add("else", content)
+                self.add("else", content.strip())
                 return
 
         parsecase()
-        
-        self.add("case", self.get("case").strip(string.whitespace))
-        self.add("then", self.get("then").strip(string.whitespace))
-        self.add("else", self.get("else").strip(string.whitespace))
 
     def run (self, tm):
-        with scope.pushscope(defineds):
-            if not self.get("name") in defineds:
-                tm.add(load(stream.stream(self.get("else"))))
-            else: tm.add(load(stream.stream(self.get("then"))))
+        if not self.get("name") in defineds:
+            tm.add(load(stream.stream(self.get("else"))))
+        else: tm.add(load(stream.stream(self.get("then"))))
 
     def build (self):
         return "@ifdef %s @then %s @else %s @endif" % (
@@ -190,7 +178,7 @@ class oprandIfndef (oprand.oprand):
             content, oprand = readtooprands(["then", "else", "endif"], streamin)
             
             if oprand == "then":
-                self.add("case", content)
+                self.add("case", content.strip())
                 return parsethen()
 
             streamcontent = stream.stream(content)
@@ -198,13 +186,13 @@ class oprandIfndef (oprand.oprand):
             rest = readrest(streamcontent)
                 
             if oprand == "else":
-                self.add("case", line)
-                self.add("then", rest)
+                self.add("case", line.strip())
+                self.add("then", rest.strip())
                 return parseelse()
             
             if oprand == "endif":
-                self.add("case", line)
-                self.add("then", rest)
+                self.add("case", line.strip())
+                self.add("then", rest.strip())
                 return
 
         def parsethen ():
@@ -212,32 +200,26 @@ class oprandIfndef (oprand.oprand):
             content, oprand = readtooprands(["else", "endif"], streamin)
 
             if oprand == "else":
-                self.add("then", content)
+                self.add("then", content.strip())
                 return parseelse()
             
             if oprand == "endif":
-                self.add("then", content)
+                self.add("then", content.strip())
                 return
 
         def parseelse ():
 
             content, oprand = readtooprands(["endif"], streamin)
-
             if oprand == "endif":
-                self.add("else", content)
+                self.add("else", content.strip())
                 return
 
         parsecase()
-        
-        self.add("case", self.get("case").strip(string.whitespace))
-        self.add("then", self.get("then").strip(string.whitespace))
-        self.add("else", self.get("else").strip(string.whitespace))
 
     def run (self, tm):
-        with scope.pushscope():
-            if self.get("name") in defineds:
-                tm.add(load(stream.stream(self.get("else"))))
-            else: tm.add(load(stream.stream(self.get("then"))))
+        if self.get("name") in defineds:
+            tm.add(load(stream.stream(self.get("else"))))
+        else: tm.add(load(stream.stream(self.get("then"))))
 
     def build (self):
         return "@ifndef %s @then %s @else %s @endif" % (
@@ -250,7 +232,8 @@ class defineImmediate (define.define):
 
     # name <- load self.source
 
-    def init (self, source):
+    def init (self, name, source):
+        self.name = name
         self.source = source
 
     def run (self, streamin):
@@ -265,7 +248,8 @@ class defineFunction (define.define):
 
     # name(...) <- load self.source with (...)
 
-    def init (self, argument, source):
+    def init (self, name, argument, source):
+        self.name = name
         self.source = source
         self.parse(argument)
 
@@ -281,11 +265,11 @@ class defineFunction (define.define):
             raise Exception("macro too many arguments of (... %s)" %
                                 ", ".join(argument[len(self.argument):]))
         with scope.pushscope(defineds):
-            for bind in zip(self.argument, argument):
+            for bind in zip(self.argument, argument): # there include bug. about local scope.
                 name, value = bind
                 value = expand(stream.stream(value))
                 if name != value:
-                    defineds.add(name, defineImmediate(value))
+                    defineds.add(name, defineImmediate(name, value))
             content = load(stream.stream(self.source))
             return content
 
@@ -302,27 +286,24 @@ class oprandDefine (oprand.oprand):
         def parsename ():
             content, oprand = readtooprands(["begin", "end"], streamin)
             if oprand == "begin":
-                self.add("name", content)
+                self.add("name", content.strip())
                 parsebegin()
                 return
             if oprand == "end":
                 streamcontent = stream.stream(content)
                 name = read.readline(streamcontent)
                 begin = read.readrest(streamcontent)
-                self.add("name", name)
-                self.add("begin", begin)
+                self.add("name", name.strip())
+                self.add("begin", begin.strip())
                 return
 
         def parsebegin ():
             content, oprand = readtooprands(["end"], streamin)
             if oprand == "end":
-                self.add("begin", content)
+                self.add("begin", content.strip())
                 return
 
         parsename()
-
-        self.add("name", self.get("name").strip(string.whitespace))
-        self.add("begin", self.get("begin").strip(string.whitespace))
 
     def run (self, tm):
         
@@ -338,11 +319,11 @@ class oprandDefine (oprand.oprand):
             argument = nameall[index:]
             
         if index == -1:
-            defineimmediate = defineImmediate(self.get("begin"))
+            defineimmediate = defineImmediate(name, self.get("begin"))
             defineds.add(name, defineimmediate)
 
         else:
-            definefunction = defineFunction(argument, self.get("begin"))
+            definefunction = defineFunction(name, argument, self.get("begin"))
             defineds.add(name, definefunction)
 
     def build (self):
