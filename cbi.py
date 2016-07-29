@@ -571,23 +571,3 @@ for filename in sys.argv[1:]:
         with open(filenameout, "w") as fout:
             fout.write(load(stream.filestream(fin)))
         pathname.pop()
-
-# import argparse
-
-# ps = argparse.ArgumentParser()
-
-# ps.add_argument("file", nargs = "?", help = "input source file.")
-
-# ps.add_argument("-v", "--version", action = "version", version = "cbi version 0.6a")
-
-# ps.add_argument("--stdin", metavar = "", help = "input from standard input.")
-
-# ps.add_argument("--stdout", metavar = "", help = "output with standard output.")
-
-# ps.add_argument("-o", nargs = 1, metavar = "", type = str, help = "output file name.")
-
-# ps.add_argument("--depending", metavar = "", help = "list depending files")
-
-# argument = ps.parse_args()
-
-# launch application
