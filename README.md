@@ -8,6 +8,12 @@ i dont like escape newline in multiline block.
 maybe some person say "should use snippets or some software.".
 but, i want to type the source code smoothly.
 
+## functions
+
+* supporting local scope.
+* supporting conditional or eternal recursive call.
+* supporting /@import/ operator. it load sourcecode which is not loaded.
+
 ## overview
 
 example.h
