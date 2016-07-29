@@ -5,7 +5,7 @@ cbi is a small preprocessor language written in python.
 probably it has  bug, because it wrote for me.
 i wrote this because, i think, standard cpp is not useful at some case.
 i dont like escape newline in multiline block.
-maybe some person say "should use snippets or some software.".
+maybe some person say "should use snippets or some software".
 but, i want to type the source code smoothly.
 
 ## functions
