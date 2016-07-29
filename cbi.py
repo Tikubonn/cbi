@@ -395,7 +395,6 @@ class oprandImport (oprand.oprand):
         if not findname in self.imported:
             pathname.push()
             pathname.add(os.path.dirname(filename))
-            print pathname.pathnames
             with open(findname, "r") as fin:
                 tm.add(load(stream.filestream(fin)))
             pathname.pop()
