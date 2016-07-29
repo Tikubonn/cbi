@@ -13,9 +13,11 @@ import temp
 import define
 import string
 import formula
+import pathname
 
 defineds = scope.scope()
 oprands = scope.scope()
+pathname = pathname.pathname()
 
 # read method
 
@@ -389,9 +391,14 @@ class oprandImport (oprand.oprand):
 
     def run (self, tm):
         filename = self.get("name")[1:-1]
+        findname = pathname.find(filename)
         if not filename in self.imported:
-            with open(filename, "r") as fin:
+            pathname.push()
+            pathname.add(os.path.dirname(filename))
+            print pathname.pathnames
+            with open(findname, "r") as fin:
                 tm.add(load(stream.filestream(fin)))
+            pathname.pop()
 
     def build (self):
         return "@import %s" % self.get("name")
@@ -407,8 +414,12 @@ class oprandLoad (oprand.oprand):
 
     def run (self, tm):
         filename = self.get("name")[1:-1]
+        dirname = os.path.dirname(filename)
+        pathname.push()
+        pathname.add(dirname)
         with open(filename, "r") as fin:
             tm.add(load(stream.filestream(fin)))
+        pathname.pop()
 
     def build (self):
         return "@load %s" % self.get("name")
@@ -424,8 +435,12 @@ class oprandSource (oprand.oprand):
         
     def run (self, tm):
         filename = self.get("name")[1:-1]
+        dirname = os.path.dirname(filename)
+        pathname.push()
+        pathname.add(dirname)
         with open(filename, "r") as fin:
             tm.add('"%s"' % "".join(map((lambda c: '\\"' if c == '"' else c), fin.read())))
+        pathname.pop()
 
     def build (self):
         return "@source %s" % self.get("name")
@@ -550,9 +565,12 @@ for filename in sys.argv[1:]:
     filenameout = filename.split(".")
     filenameout.insert(-1, "com")
     filenameout = ".".join(filenameout)
+    pathname.push()
+    pathname.add(os.path.dirname(filename))
     with open(filename, "r") as fin:
         with open(filenameout, "w") as fout:
             fout.write(load(stream.filestream(fin)))
+        pathname.pop()
 
 # import argparse
 

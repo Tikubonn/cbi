@@ -1,4 +1,6 @@
 
+import os
+
 class pathname:
 
     pathnames = None
@@ -10,7 +12,7 @@ class pathname:
         self.pathnames.append(set())
 
     def pop (self):
-        return pathnames.pop()
+        return self.pathnames.pop()
 
     def add (self, pathname):
         self.pathnames[-1].add(pathname)
@@ -21,5 +23,11 @@ class pathname:
             for path in pathname:
                 pathnames.add(path)
         return pathnames
+
+    def find (self, filename):
+        for pathname in self.get():
+            pathname = os.path.join(pathname, filename)
+            if os.path.exists(pathname):
+                return pathname
 
     __init__ = init
