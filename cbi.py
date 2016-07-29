@@ -392,7 +392,7 @@ class oprandImport (oprand.oprand):
     def run (self, tm):
         filename = self.get("name")[1:-1]
         findname = pathname.find(filename)
-        if not filename in self.imported:
+        if not findname in self.imported:
             pathname.push()
             pathname.add(os.path.dirname(filename))
             print pathname.pathnames
