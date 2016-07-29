@@ -96,10 +96,10 @@ class oprandIf (oprand.oprand):
         self.add("else", self.get("else").strip(string.whitespace))
 
     def run (self, tm):
-        exp = expand(stream.stream(self.get("case")))
-        if fomula.evaluate(exp) == 0:
-            tm.add(load(stream.stream(self.get("else"))))
-        else: tm.add(load(stream.stream(self.get("then"))))
+        with scope.pushscope(defineds):
+            if fomula.evaluate(expand(stream.stream(self.get("case")))) == 0:
+                tm.add(load(stream.stream(self.get("else"))))
+            else: tm.add(load(stream.stream(self.get("then"))))
     
     def build (self):
         return "@if %s @then %s @else %s @endif" % (
@@ -165,9 +165,10 @@ class oprandIfdef (oprand.oprand):
         self.add("else", self.get("else").strip(string.whitespace))
 
     def run (self, tm):
-        if not self.get("name") in defineds:
-            tm.add(load(stream.stream(self.get("else"))))
-        else: tm.add(load(stream.stream(self.get("then"))))
+        with scope.pushscope(defineds):
+            if not self.get("name") in defineds:
+                tm.add(load(stream.stream(self.get("else"))))
+            else: tm.add(load(stream.stream(self.get("then"))))
 
     def build (self):
         return "@ifdef %s @then %s @else %s @endif" % (
@@ -232,24 +233,11 @@ class oprandIfndef (oprand.oprand):
         self.add("then", self.get("then").strip(string.whitespace))
         self.add("else", self.get("else").strip(string.whitespace))
 
-        def parsethen ():
-            content, oprand = readtooprands(["else", "endif"], streamin)
-            if oprand == "else":
-                pass
-            if oprand == "endif":
-                pass
-
-        def parseelse ():
-            content, oprand = readtooprands(["else"], streamin)
-            if oprand == "endif":
-                pass
-
-        parsecase()
-
     def run (self, tm):
-        if self.get("name") in defineds:
-            tm.add(load(stream.stream(self.get("else"))))
-        else: tm.add(load(stream.stream(self.get("then"))))
+        with scope.pushscope():
+            if self.get("name") in defineds:
+                tm.add(load(stream.stream(self.get("else"))))
+            else: tm.add(load(stream.stream(self.get("then"))))
 
     def build (self):
         return "@ifndef %s @then %s @else %s @endif" % (
@@ -266,7 +254,10 @@ class defineImmediate (define.define):
         self.source = source
 
     def run (self, streamin):
-        return load(stream.stream(self.source))
+        defineds.push()
+        content = load(stream.stream(self.source))
+        defineds.pop()
+        return content
 
     __init__ = init
 
@@ -393,7 +384,7 @@ class oprandImport (oprand.oprand):
         findname = pathname.find(filename)
         if not findname in imported:
             imported.add(findname)
-            pathname.pushroot()
+            pathname.push()
             pathname.add(os.path.dirname(filename))
             with open(findname, "r") as fin:
                 tm.add(load(stream.filestream(fin)))
@@ -414,7 +405,7 @@ class oprandLoad (oprand.oprand):
     def run (self, tm):
         filename = self.get("name")[1:-1]
         dirname = os.path.dirname(filename)
-        pathname.pushroot()
+        pathname.push()
         pathname.add(dirname)
         with open(filename, "r") as fin:
             tm.add(load(stream.filestream(fin)))
@@ -435,7 +426,7 @@ class oprandSource (oprand.oprand):
     def run (self, tm):
         filename = self.get("name")[1:-1]
         dirname = os.path.dirname(filename)
-        pathname.pushroot()
+        pathname.push()
         pathname.add(dirname)
         with open(filename, "r") as fin:
             tm.add('"%s"' % "".join(map((lambda c: '\\"' if c == '"' else c), fin.read())))
@@ -510,13 +501,16 @@ def buildoprand (name, streamin):
     raise Exception("undefined oprand %s in buildoprand()." % name)
 
 def load (streamin):
+    expandmethod = expand2
+    if defineds.isroot():
+        expandmethod = expand
     tm = temp.temp()
     while streamin.look():
         content, opcode = read.readoprand(streamin)
         tm.addtemp(content)
         opcode and runoprand(opcode, tm, streamin)
     source = tm.gettemp()
-    source = expand(stream.stream(source))
+    source = expandmethod(stream.stream(source))
     tm.add(source)
     return tm.get().strip(string.whitespace)
 
@@ -555,8 +549,6 @@ def expand2 (streamin):
     while streamin.look():
         content += expandone(streamin)
     return content
-
-expand = expand2
 
 # import sys
 
