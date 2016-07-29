@@ -77,8 +77,11 @@ int main (){
 }
 ```
 
-##todo
+## todo
 * at now version, ## operator will consolidated tokens in anywhere. so i want to ignore concatenation in outside of block.
 * translating to recrusive call to loop.
 * think more about order of operators.
 * and fix some bug.
+
+## licence
+this released under the MIT Licence.

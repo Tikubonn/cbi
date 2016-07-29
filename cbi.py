@@ -393,7 +393,7 @@ class oprandImport (oprand.oprand):
         findname = pathname.find(filename)
         if not findname in imported:
             imported.add(findname)
-            pathname.push()
+            pathname.pushroot()
             pathname.add(os.path.dirname(filename))
             with open(findname, "r") as fin:
                 tm.add(load(stream.filestream(fin)))
@@ -414,7 +414,7 @@ class oprandLoad (oprand.oprand):
     def run (self, tm):
         filename = self.get("name")[1:-1]
         dirname = os.path.dirname(filename)
-        pathname.push()
+        pathname.pushroot()
         pathname.add(dirname)
         with open(filename, "r") as fin:
             tm.add(load(stream.filestream(fin)))
@@ -435,7 +435,7 @@ class oprandSource (oprand.oprand):
     def run (self, tm):
         filename = self.get("name")[1:-1]
         dirname = os.path.dirname(filename)
-        pathname.push()
+        pathname.pushroot()
         pathname.add(dirname)
         with open(filename, "r") as fin:
             tm.add('"%s"' % "".join(map((lambda c: '\\"' if c == '"' else c), fin.read())))

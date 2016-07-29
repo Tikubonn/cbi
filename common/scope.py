@@ -1,11 +1,19 @@
 
+class scopein (dict):
+
+    def __init__ (self, isroot = False):
+        self.isroot = isroot
+
 class scope:
 
     def init (self):
-        self.scopes = [{}]
+        self.scopes = [scopein(True)]
 
     def push (self):
-        self.scopes.append({})
+        self.scopes.append(scopein())
+
+    def pushroot (self):
+        self.scopes.append(scopein(True))
 
     def pop (self):
         self.scopes.pop()
