@@ -1,12 +1,12 @@
 
 # cbi
 
-cbi is a small preprocessor language written in python. 
-probably it has  bug, because it wrote for me. 
-i wrote this because, i think, standard cpp is not useful at some case. 
-i dont like escape newline in multiline block. 
-maybe some person say "should use snippets or some software. ". 
-but, i want to type the source code smoothly. 
+cbi is a small preprocessor language written in python.
+probably it has  bug, because it wrote for me.
+i wrote this because, i think, standard cpp is not useful at some case.
+i dont like escape newline in multiline block.
+maybe some person say "should use snippets or some software.".
+but, i want to type the source code smoothly.
 
 ## overview
 
@@ -72,7 +72,7 @@ int main (){
 ```
 
 ##todo
-at now version, ## operator will consolidated tokens in anywhere. 
-i want to ignore concatenation in outside of block. 
-and i want to think about operator order. 
-and fixed some bug. 
+at now version, ## operator will consolidated tokens in anywhere.
+i want to ignore concatenation in outside of block.
+and i want to think about operator order.
+and fix some bug.
