@@ -2,7 +2,8 @@
 import os
 import sys
 
-sys.path.append(os.path.expanduser("common"))
+base = os.path.dirname(sys.argv[0])
+sys.path.append(os.path.join(base, "common"))
 
 import stream
 import oprand
