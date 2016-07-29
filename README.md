@@ -70,3 +70,9 @@ int main (){
   return 3 + 3 - 1 + 3 - 1 - 1 + 0;
 }
 ```
+
+##todo
+at now version, ## operator will consolidated tokens in anywhere.
+i want to ignore concatenation in outside of block.
+and i want to think about operator order.
+and fixed some bug.
