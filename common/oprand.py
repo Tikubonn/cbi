@@ -5,7 +5,7 @@ class oprand:
         self.props = {}
 
     def add (self, name, value):
-        return self.props.setdefault(name, value)
+        self.props[name] = value
 
     def get (self, name):
         return self.props.get(name, "")

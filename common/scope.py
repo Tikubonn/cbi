@@ -19,9 +19,10 @@ class scope:
         self.scopes[-1][name] = value
 
     def get (self, name):
-        for scope in reversed(self.scopes):
-            if name in scope:
-                return scope.get(name, None)
+        if name in self.scopes[-1]:
+            return self.scopes[-1].get(name)
+        if name in self.scopes[0]:
+            return self.scopes[0].get(name)
 
     def contains (self, name):
         return bool(self.get(name))

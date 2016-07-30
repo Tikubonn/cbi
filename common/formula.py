@@ -207,7 +207,7 @@ def evaluatefomula (tokens):
             stack.append(token)
         else: token.evaluate(stack)
     if len(stack) > 1:
-        raise Exception("stack has any values in evalfomula().")
+        raise Exception("stack has many values in evalfomula().")
     return stack[0]
 
 # alias of procedure

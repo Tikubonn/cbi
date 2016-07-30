@@ -91,7 +91,7 @@ class oprandIf (oprand.oprand):
         parsecase()
 
     def run (self, tm):
-        if formula.evaluate(expand(stream.stream(self.get("case")))) == 0:
+        if formula.evaluate(load(stream.stream(self.get("case")))) == 0:
             tm.add(load(stream.stream(self.get("else"))))
         else: tm.add(load(stream.stream(self.get("then"))))
     
@@ -232,13 +232,16 @@ class defineImmediate (define.define):
 
     # name <- load self.source
 
-    def init (self, name, source):
+    def init (self, name, source, load = True):
         self.name = name
         self.source = source
+        self.load = load
 
     def run (self, streamin):
         with scope.pushscope(defineds):
-            content = load(stream.stream(self.source))
+            content = self.source
+            if self.load:
+                content = load(stream.stream(content))
             return content
 
     __init__ = init
@@ -259,19 +262,31 @@ class defineFunction (define.define):
     def run (self, streamin):
         argument = read.readlist(streamin)
         if len(argument) < len(self.argument):
-            raise Exception("macro missing arguments of (... %s)." %
-                                ", ".join(self.argument[len(argument):]))
+            raise Exception(
+                "macro missing arguments of (... %s)." % ", ".join(self.argument[len(argument):]))
         if len(argument) > len(self.argument):
-            raise Exception("macro too many arguments of (... %s)" %
-                                ", ".join(argument[len(self.argument):]))
+            raise Exception(
+                "macro too many arguments of (... %s)" % ", ".join(argument[len(self.argument):]))
+        argument = map(stream.stream, argument)
+        argument = map(load, argument)
         with scope.pushscope(defineds):
-            for bind in zip(self.argument, argument): # there include bug. about local scope.
+            for bind in zip(self.argument, argument):
                 name, value = bind
-                value = expand(stream.stream(value))
-                if name != value:
-                    defineds.add(name, defineImmediate(name, value))
+                if name == value:
+                    defineds.add(name, defineImmediate(name, value, False))
+                else: defineds.add(name, defineImmediate(name, value))
+                # if name != value:
+                #     defineds.add(name, defineImmediate(name, value))
             content = load(stream.stream(self.source))
             return content
+        # with scope.pushscope(defineds):
+        #     for bind in zip(self.argument, argument): # there include bug. about local scope.
+        #         name, value = bind
+        #         value = expand(stream.stream(value))
+        #         if name != value:
+        #             defineds.add(name, defineImmediate(name, value))
+        #     content = load(stream.stream(self.source))
+        #     return content
 
     __init__ = init
     
@@ -304,7 +319,7 @@ class oprandDefine (oprand.oprand):
                 return
 
         parsename()
-
+            
     def run (self, tm):
         
         nameall = self.get("name")
@@ -319,6 +334,8 @@ class oprandDefine (oprand.oprand):
             argument = nameall[index:]
             
         if index == -1:
+            if not defineds.isroot():
+                self.add("begin", expand2(stream.stream(self.get("begin"))))
             defineimmediate = defineImmediate(name, self.get("begin"))
             defineds.add(name, defineimmediate)
 
@@ -463,19 +480,19 @@ def parseoprand (name, streamin):
         op = oprands.get(name)()
         op.parse(streamin)
         return op
-    raise Exception("undefined oprand %s in parseoprand()." % name)
+    raise Exception("undefined operator %s." % name)
 
 def runoprand (name, tm, streamin):
     if name in oprands:
         op = parseoprand(name, streamin)
         return op.run(tm)
-    raise Exception("undefined oprand %s in runoprand()." % name)
+    raise Exception("undefined operator %s." % name)
 
 def buildoprand (name, streamin):
     if name in oprands:
         op = parseoprand(name, streamin)
         return op.build()
-    raise Exception("undefined oprand %s in buildoprand()." % name)
+    raise Exception("undefined operator %s." % name)
 
 def load (streamin):
     expandmethod = expand2
@@ -506,6 +523,11 @@ def expand2 (streamin):
     
     def expandone (streamin):
         word = read.readword(streamin)
+        # if word:
+        #     print word, word in defineds
+        #     for name in defineds.scopes[-1]:
+        #         print name
+        #     print
         if word in defineds:
             word = defineds.get(word).run(streamin)
         space = read.readspace(streamin)
@@ -525,6 +547,11 @@ def expand2 (streamin):
     content = ""
     while streamin.look():
         content += expandone(streamin)
+    # print content
+    # for scope in defineds.scopes:
+    #     for name in scope:
+    #         print name
+    # print 
     return content
 
 # import sys
