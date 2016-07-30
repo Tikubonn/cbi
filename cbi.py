@@ -275,19 +275,9 @@ class defineFunction (define.define):
                 if name == value:
                     defineds.add(name, defineImmediate(name, value, False))
                 else: defineds.add(name, defineImmediate(name, value))
-                # if name != value:
-                #     defineds.add(name, defineImmediate(name, value))
             content = load(stream.stream(self.source))
             return content
-        # with scope.pushscope(defineds):
-        #     for bind in zip(self.argument, argument): # there include bug. about local scope.
-        #         name, value = bind
-        #         value = expand(stream.stream(value))
-        #         if name != value:
-        #             defineds.add(name, defineImmediate(name, value))
-        #     content = load(stream.stream(self.source))
-        #     return content
-
+        
     __init__ = init
     
 
@@ -523,11 +513,6 @@ def expand2 (streamin):
     
     def expandone (streamin):
         word = read.readword(streamin)
-        # if word:
-        #     print word, word in defineds
-        #     for name in defineds.scopes[-1]:
-        #         print name
-        #     print
         if word in defineds:
             word = defineds.get(word).run(streamin)
         space = read.readspace(streamin)
@@ -547,11 +532,6 @@ def expand2 (streamin):
     content = ""
     while streamin.look():
         content += expandone(streamin)
-    # print content
-    # for scope in defineds.scopes:
-    #     for name in scope:
-    #         print name
-    # print 
     return content
 
 # import sys
